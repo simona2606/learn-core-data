@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct LearnCoreDataApp: App {
-    let persistenceController = PersistenceController.shared
+    let viewModel = MoviesViewModel()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            MoviesView()
+                .environmentObject(viewModel)
         }
     }
 }
