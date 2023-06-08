@@ -35,6 +35,8 @@ enum DataError: Error {
     case network(URLError)
     
     case unknown(Error?)
+    
+    case coreData(String)
 }
 
 func mapResponse(response: (data: Data, response: URLResponse)) throws -> Data {

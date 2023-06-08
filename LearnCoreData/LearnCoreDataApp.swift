@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct LearnCoreDataApp: App {
+    
     let viewModel = MoviesViewModel()
 
     var body: some Scene {

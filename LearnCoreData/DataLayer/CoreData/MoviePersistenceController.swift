@@ -9,9 +9,14 @@ import Foundation
 import CoreData
 
 class MoviePersistenceController: ObservableObject {
-    var persistentController = NSPersistentContainer(name: "Movie")
+    var persistentContainer = NSPersistentContainer(name: "MovieCD")
     
     init() {
-        
+        persistentContainer.loadPersistentStores { storeDescription, error in
+            if let error = error {
+                print("error = \(error)")
+            }
+            
+        }
     }
 }

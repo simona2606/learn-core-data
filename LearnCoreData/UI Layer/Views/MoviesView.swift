@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Charts
+import CoreData
 
 struct MoviesView: View {
     @EnvironmentObject var viewModel: MoviesViewModel
@@ -34,6 +35,20 @@ struct MoviesView: View {
                         }
                     }
                 }
+                
+//                .onTapGesture {
+//                    if let movie = viewModel.movies.first {
+//                        let movieCD = MovieCD(context: managedObjectContext)
+//                        movieCD.id = Int64(movie.id)
+//                        movieCD.title = movie.title
+//                        movieCD.largeImageUrl = movie.getLargeImageUrl()
+//                        movieCD.thumbnailImageUrl = movie.getThumbnailImageUrl()
+//                        movieCD.overview = movie.overview
+//                        movieCD.imageUrlSuffix = movie.imageUrlSuffix
+//                        try? managedObjectContext.save()
+//                    }
+//                }
+                
                 .tabItem {
                     Label("Movies", systemImage: "popcorn.fill")
                 }
