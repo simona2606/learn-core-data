@@ -66,12 +66,13 @@ class MoviesViewModel: ObservableObject {
                 let topRatedMovieRoot: TopRatedMovieRootResult = try await apiService.fetch(url: url)
                 Task { @MainActor [weak self] in
                     self?.movieRatings = topRatedMovieRoot.topRatedMovies
+                    self?.persistenceController.updateAndAddMovieRatingServerDataToCoreData(movieRatingFromBackend: self?.movieRatings)
                 }
             } catch {
                 throw error
             }
         default:
-            break
+            movieRatings = persistenceController.fetchMovieRatingsFromCoreData()
         }
     }
 }

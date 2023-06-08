@@ -11,6 +11,7 @@ import CoreData
 class MoviePersistenceController: ObservableObject {
     var persistentContainer = NSPersistentContainer(name: "MovieCD")
     private var moviesFetchRequest = MovieCD.fetchRequest()
+    private var movieRatingsFetchRequest = MovieRatingCD.fetchRequest()
     
     init() {
         persistentContainer.loadPersistentStores { storeDescription, error in
@@ -93,6 +94,63 @@ class MoviePersistenceController: ObservableObject {
         try? managedObjectContext.save()
     }
     
+    func updateAndAddMovieRatingServerDataToCoreData(movieRatingFromBackend: [MovieRating]?) {
+        // 0. Prepare incoming server side movies ID list and dictionary
+        var movieRatingsIdDict: [Int: MovieRating] = [:]
+        var movieRatingsIdList: [Int] = []
+        
+        guard let movieRatings = movieRatingFromBackend, !movieRatings.isEmpty else {
+            return
+        }
+        
+        for movieRating in movieRatings {
+            movieRatingsIdDict[movieRating.id] = movieRating
+        }
+            
+        movieRatingsIdList = movieRatings.map { $0.id }
+        
+        // 1. Get all the movies that match incoming server side movied ID
+        // Find any existing movies in our local core data
+        movieRatingsFetchRequest.predicate = NSPredicate(format: "id IN %@", movieRatingsIdList)
+
+        // 2. Make a fetch request using predicate
+        let managedObjectContext = persistentContainer.viewContext
+           
+        let movieRatingsCDList = try? managedObjectContext.fetch(movieRatingsFetchRequest)
+        guard let movieRatingsCDList = movieRatingsCDList else {
+            return
+        }
+
+      var movieRatingsIdListInCD: [Int] = []
+        
+        // 3. Update all matching movies to have the same data
+        for movieRatingCD in movieRatingsCDList {
+            movieRatingsIdListInCD.append(Int(movieRatingCD.id))
+            if let movieRating = movieRatingsIdDict[Int(movieRatingCD.id)] {
+                movieRatingCD.setValue(movieRating.popularity, forKey: "popularity")
+                movieRatingCD.setValue(movieRating.title, forKey: "title")
+                movieRatingCD.setValue(movieRating.voteAverage, forKey: "voteAverage")
+                movieRatingCD.setValue(movieRating.voteCount, forKey: "voteCount")
+          }
+            
+        }
+        
+        // 4. Add new objects coming from the backend/server side
+        for movieRating in movieRatings {
+            if !movieRatingsIdListInCD.contains(movieRating.id) {
+                let movieRatingCD = MovieRatingCD(context: managedObjectContext)
+                movieRatingCD.id = Int64(movieRating.id)
+                movieRatingCD.title = movieRating.title
+                movieRatingCD.popularity = movieRating.popularity
+                movieRatingCD.voteCount = Int64(movieRating.voteCount)
+                movieRatingCD.voteAverage = movieRating.voteAverage
+            }
+        }
+        
+        // 5. Save changes
+        try? managedObjectContext.save()
+    }
+    
     func fetchMoviesFromCoreData() -> [Movie] {
         let movieTitleSortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         let releaseDateSortDescriptor = NSSortDescriptor(key: "releaseDate", ascending: true)
@@ -112,4 +170,25 @@ class MoviePersistenceController: ObservableObject {
         
         return convertedMovies
     }
+    
+    func fetchMovieRatingsFromCoreData() -> [MovieRating] {
+        let movieRatingVoteCountSortDescriptor = NSSortDescriptor(key: "voteCount", ascending: true)
+       
+        movieRatingsFetchRequest.sortDescriptors = [movieRatingVoteCountSortDescriptor]
+        
+        let movieRatingsCDList = try? persistentContainer.viewContext.fetch(movieRatingsFetchRequest)
+        
+        var convertedMovieRatings: [MovieRating] = []
+        guard let movieRatingsCDList = movieRatingsCDList else {
+            return []
+        }
+        
+        for movieRatingCD in movieRatingsCDList {
+            let movieRating = MovieRating(id: Int(movieRatingCD.id), title: movieRatingCD.title ?? "", popularity: movieRatingCD.popularity, voteCount: Int(movieRatingCD.voteCount), voteAverage: movieRatingCD.voteAverage)
+            convertedMovieRatings.append(movieRating)
+        }
+        
+        return convertedMovieRatings
+    }
+  
 }

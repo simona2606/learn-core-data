@@ -38,6 +38,7 @@
 		3E21B9B82A2FB613004D321E /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3E21B9BA2A2FB631004D321E /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
 		3E8F651B2A324317004C7572 /* MovieCD 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "MovieCD 2.xcdatamodel"; sourceTree = "<group>"; };
+		3E8F651C2A3249D5004C7572 /* MovieCD 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "MovieCD 3.xcdatamodel"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -445,10 +446,11 @@
 		3E09C3572A31C16B006724B6 /* MovieCD.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				3E8F651C2A3249D5004C7572 /* MovieCD 3.xcdatamodel */,
 				3E8F651B2A324317004C7572 /* MovieCD 2.xcdatamodel */,
 				3E09C3582A31C16B006724B6 /* MovieCD.xcdatamodel */,
 			);
-			currentVersion = 3E8F651B2A324317004C7572 /* MovieCD 2.xcdatamodel */;
+			currentVersion = 3E8F651C2A3249D5004C7572 /* MovieCD 3.xcdatamodel */;
 			path = MovieCD.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
